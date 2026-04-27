@@ -1,4 +1,5 @@
 import { useState } from "react";
+import classNames from "classnames";
 import Radio from "@/atoms/Radio";
 import type { Step, Selections } from "./types";
 import { formContent, formatOption, allOptions, selectedLabel } from "./helpers";
@@ -75,7 +76,7 @@ export default function MultiStepForm() {
           <fieldset
             key={step.id}
             disabled={!isCompleted && !isActive}
-            className={[styles.fieldset, isActive && styles.active].filter(Boolean).join(" ")}
+            className={classNames(styles.fieldset, { [styles.active]: isActive })}
           >
             <legend className={styles.legend}>{step.label}</legend>
             {isCompleted && (
