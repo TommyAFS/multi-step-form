@@ -1,3 +1,5 @@
+import styles from "./Radio.module.css";
+
 type RadioProps = {
   label: string;
   value: string;
@@ -8,8 +10,9 @@ type RadioProps = {
 
 export default function Radio({ label, value, name, checked, onChange }: RadioProps) {
   return (
-    <label>
+    <label className={styles.label}>
       <input
+        className={styles.input}
         type="radio"
         name={name}
         value={value}

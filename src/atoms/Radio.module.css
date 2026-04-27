@@ -1,0 +1,31 @@
+.label {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9375rem;
+  transition: border-color 0.15s, background-color 0.15s;
+  user-select: none;
+}
+
+.label:hover {
+  border-color: #a5b4fc;
+  background-color: #f5f3ff;
+}
+
+.label:has(input:checked) {
+  border-color: #4f46e5;
+  background-color: #eef2ff;
+  font-weight: 500;
+}
+
+.input {
+  accent-color: #4f46e5;
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  cursor: pointer;
+}

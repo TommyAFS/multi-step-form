@@ -2,6 +2,7 @@ import { useState } from "react";
 import Radio from "@/atoms/Radio";
 import type { Step, Selections } from "./types";
 import { formContent, formatOption, allOptions, selectedLabel } from "./helpers";
+import styles from "./MultiStepForm.module.css";
 
 function ActiveStep({ step, selected, onSelect }: {
   step: Step;
@@ -9,37 +10,46 @@ function ActiveStep({ step, selected, onSelect }: {
   onSelect: (value: string) => void;
 }) {
   if (step.groups) {
-    return step.groups.map((group) => (
-      <div key={group.id}>
-        <p>{group.label} ({group.count})</p>
-        {group.options.map((option) => (
-          <Radio
-            key={option.id}
-            name={step.id}
-            value={option.id}
-            label={formatOption(option)}
-            checked={selected === option.id}
-            onChange={onSelect}
-          />
+    return (
+      <div className={styles.options}>
+        {step.groups.map((group) => (
+          <div key={group.id} className={styles.group}>
+            <p className={styles.groupLabel}>{group.label} ({group.count})</p>
+            {group.options.map((option) => (
+              <Radio
+                key={option.id}
+                name={step.id}
+                value={option.id}
+                label={formatOption(option)}
+                checked={selected === option.id}
+                onChange={onSelect}
+              />
+            ))}
+          </div>
         ))}
       </div>
-    ));
+    );
   }
 
-  return allOptions(step).map((option) => (
-    <Radio
-      key={option.id}
-      name={step.id}
-      value={option.id}
-      label={formatOption(option)}
-      checked={selected === option.id}
-      onChange={onSelect}
-    />
-  ));
+  return (
+    <div className={styles.options}>
+      {allOptions(step).map((option) => (
+        <Radio
+          key={option.id}
+          name={step.id}
+          value={option.id}
+          label={formatOption(option)}
+          checked={selected === option.id}
+          onChange={onSelect}
+        />
+      ))}
+    </div>
+  );
 }
 
 export default function MultiStepForm() {
   const [selections, setSelections] = useState<Selections>({});
+  
 
   const activeStepIndex = formContent.steps.findIndex((step) => !selections[step.id]);
 
@@ -56,19 +66,23 @@ export default function MultiStepForm() {
   }
 
   return (
-    <form>
+    <form className={styles.form}>
       {formContent.steps.map((step, index) => {
         const isCompleted = !!selections[step.id];
         const isActive = index === activeStepIndex;
 
         return (
-          <fieldset key={step.id} disabled={!isCompleted && !isActive}>
-            <legend>{step.label}</legend>
+          <fieldset
+            key={step.id}
+            disabled={!isCompleted && !isActive}
+            className={[styles.fieldset, isActive && styles.active].filter(Boolean).join(" ")}
+          >
+            <legend className={styles.legend}>{step.label}</legend>
             {isCompleted && (
-              <>
-                <p>{selectedLabel(step, selections[step.id])}</p>
-                <button type="button" onClick={() => handleEdit(index)}>Edit</button>
-              </>
+              <div className={styles.completedRow}>
+                <p className={styles.completedValue}>{selectedLabel(step, selections[step.id])}</p>
+                <button type="button" className={styles.editButton} onClick={() => handleEdit(index)}>Edit</button>
+              </div>
             )}
             {isActive && (
               <ActiveStep
