@@ -1,0 +1,102 @@
+{
+  "steps": [
+    {
+      "id": "academic-year",
+      "label": "Academic year",
+      "type": "radio",
+      "options": [
+        { "id": "2026-2027", "label": "2026 / 2027" },
+        { "id": "2027-2028", "label": "2027 / 2028" }
+      ]
+    },
+    {
+      "id": "stay-length",
+      "label": "Stay length",
+      "type": "radio",
+      "options": [
+        {
+          "id": "51-weeks",
+          "label": "51 weeks",
+          "dateRange": "22 Sep 2026 – 10 Aug 2027"
+        },
+        {
+          "id": "44-weeks",
+          "label": "44 weeks",
+          "dateRange": "Oct 2026 – Aug 2027"
+        },
+        {
+          "id": "8-weeks",
+          "label": "8 weeks",
+          "dateRange": "22 Sep 2026 – 8 Jul 2027"
+        }
+      ]
+    },
+    {
+      "id": "room-type",
+      "label": "Room type",
+      "type": "radio",
+      "groups": [
+        {
+          "id": "private-room",
+          "label": "Private room",
+          "count": 4,
+          "options": [
+            {
+              "id": "platinum-ensuite",
+              "label": "Platinum Ensuite",
+              "pricePerWeek": 250,
+              "image": null
+            },
+            {
+              "id": "gold-ensuite",
+              "label": "Gold Ensuite",
+              "pricePerWeek": 240,
+              "image": null
+            },
+            {
+              "id": "silver-ensuite",
+              "label": "Silver Ensuite",
+              "pricePerWeek": 230,
+              "image": null
+            },
+            {
+              "id": "bronze-ensuite",
+              "label": "Bronze Ensuite",
+              "pricePerWeek": 220,
+              "image": null
+            }
+          ]
+        },
+        {
+          "id": "entire-place",
+          "label": "Entire place",
+          "count": 2,
+          "options": [
+            {
+              "id": "platinum-studio",
+              "label": "Platinum Studio",
+              "pricePerWeek": 270,
+              "image": null
+            },
+            {
+              "id": "gold-studio",
+              "label": "Gold Studio",
+              "pricePerWeek": 260,
+              "image": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "floor-level",
+      "label": "Floor level",
+      "type": "radio",
+      "options": [
+        { "id": "ground-floor", "label": "Ground floor", "pricePerWeek": 250 },
+        { "id": "floors-1-4", "label": "Floors 1 – 4", "pricePerWeek": 255 },
+        { "id": "floors-5-6", "label": "Floors 5 – 6", "pricePerWeek": 260 }
+      ]
+    }
+  ]
+}
