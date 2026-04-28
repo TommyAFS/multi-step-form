@@ -1,0 +1,19 @@
+.inputs {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.inputs > :nth-child(1),
+.inputs > :nth-child(2) {
+  flex: 1;
+}
+
+.inputs > :nth-child(3) {
+  flex: 2;
+}
+
+.error {
+  font-size: 0.8125rem;
+  color: #dc2626;
+  margin-top: 0.25rem;
+}

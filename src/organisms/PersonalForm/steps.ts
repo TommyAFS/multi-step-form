@@ -3,7 +3,7 @@ import content from "./personalFormContent.json";
 export type FieldDef = {
   id: string;
   label: string;
-  type: "text" | "email" | "tel" | "date" | "select";
+  type: "text" | "email" | "tel" | "dob" | "select";
   options?: { value: string; label: string }[];
   autoComplete?: string;
   half?: boolean;

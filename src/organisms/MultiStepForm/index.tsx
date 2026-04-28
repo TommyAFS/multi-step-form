@@ -1,6 +1,6 @@
 import { useState } from "react";
 import classNames from "classnames";
-import Radio from "@/atoms/Radio";
+import Radio from "@/atoms/Radio/Radio";
 import type { Step, Selections } from "./types";
 import { formContent, formatOption, allOptions, selectedLabel } from "./helpers";
 import { type SubmitState, postStepData, submitFormData } from "@/lib/formHelpers";

@@ -14,7 +14,7 @@
       "id": "additional",
       "label": "Additional Details",
       "fields": [
-        { "id": "dob", "label": "Date of birth", "type": "date" },
+        { "id": "dob", "label": "Date of birth", "type": "dob" },
         {
           "id": "gender",
           "label": "Gender",

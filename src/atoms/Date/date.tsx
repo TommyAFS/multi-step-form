@@ -1,4 +1,5 @@
 import Input from "../Input/Input";
+import styles from "./Date.module.css";
 
 type DateOfBirthValue = {
   day: string;
@@ -18,31 +19,33 @@ type FieldDateOfBirthProps = {
 export default function FieldDateOfBirth({ id, value, onChange, onBlur, error, className }: FieldDateOfBirthProps) {
   return (
     <div className={className}>
-      <Input
-        id={`${id}-day`}
-        label="Day"
-        value={value.day}
-        onChange={(day) => onChange({ ...value, day })}
-        onBlur={onBlur ? () => onBlur() : undefined}
-        autoComplete="bday-day"
-      />
-      <Input
-        id={`${id}-month`}
-        label="Month"
-        value={value.month}
-        onChange={(month) => onChange({ ...value, month })}
-        onBlur={onBlur ? () => onBlur() : undefined}
-        autoComplete="bday-month"
-      />
-      <Input
-        id={`${id}-year`}
-        label="Year"
-        value={value.year}
-        onChange={(year) => onChange({ ...value, year })}
-        onBlur={onBlur ? () => onBlur() : undefined}
-        autoComplete="bday-year"
-      />
-      {error && <p>{error}</p>}
+      <div className={styles.inputs}>
+        <Input
+          id={`${id}-day`}
+          label="Day"
+          value={value.day}
+          onChange={(day) => onChange({ ...value, day })}
+          onBlur={onBlur ? () => onBlur() : undefined}
+          autoComplete="bday-day"
+        />
+        <Input
+          id={`${id}-month`}
+          label="Month"
+          value={value.month}
+          onChange={(month) => onChange({ ...value, month })}
+          onBlur={onBlur ? () => onBlur() : undefined}
+          autoComplete="bday-month"
+        />
+        <Input
+          id={`${id}-year`}
+          label="Year"
+          value={value.year}
+          onChange={(year) => onChange({ ...value, year })}
+          onBlur={onBlur ? () => onBlur() : undefined}
+          autoComplete="bday-year"
+        />
+      </div>
+      {error && <p className={styles.error}>{error}</p>}
     </div>
   );
 }

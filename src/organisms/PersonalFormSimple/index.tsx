@@ -1,14 +1,16 @@
 import { useState } from "react";
 import classNames from "classnames";
-import Input from "@/atoms/Input";
-import Select from "@/atoms/Select";
+import Input from "@/atoms/Input/Input";
+import Select from "@/atoms/Select/Select";
+import FieldDateOfBirth from "@/atoms/Date/date";
+import { validateDateOfBirth } from "@/atoms/Date/date.validation";
 import { steps } from "@/organisms/PersonalForm/steps";
 import type { StepDef } from "@/organisms/PersonalForm/steps";
 import { type SubmitState, postStepData, submitFormData } from "@/lib/formHelpers";
 import styles from "./PersonalFormSimple.module.css";
 
-// Validation rules as a plain object — no hook, no abstraction.
-// Each entry maps a field ID to its required message and/or a regex pattern.
+type DobValue = { day: string; month: string; year: string };
+
 type FieldRule = {
   required?: string;
   pattern?: { value: RegExp; message: string };
@@ -18,13 +20,12 @@ const validationRules: Record<string, FieldRule> = {
   firstName: { required: "First name is required" },
   lastName:  { required: "Last name is required" },
   email:     { required: "Email is required", pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Enter a valid email address" } },
-  phone: { required: "Phone number is required", pattern: { value: /^[0-9]+$/ , message: "Phone numbers are need numbers numskull"}},
-  dob:       { required: "Date of birth is required" },
+  phone: { required: "Phone number is required", pattern: { value: /^\d+$/ , message: "Phone numbers are need numbers numskull"}},
   gender:    { required: "Please select a gender" },
   country:   { required: "Please select a country" },
   ecName:    { required: "Full name is required" },
   ecRelationship: { required: "Relationship is required" },
-  ecPhone: { required: "Phone number is required", pattern: { value: /^[0-9]+$/, message: "Phone are numbers numbers numbers numskull" } },
+  ecPhone: { required: "Phone number is required", pattern: { value: /^\d+$/, message: "Phone are numbers numbers numbers numskull" } },
 };
 
 function validate(id: string, value: string): string {
@@ -35,41 +36,63 @@ function validate(id: string, value: string): string {
   return "";
 }
 
-function ActiveStep({ step, values, errors, onChange, onContinue, stepLoading }: {
+type ActiveStepProps = {
   step: StepDef;
   values: Record<string, string>;
   errors: Record<string, string>;
   onChange: (id: string, value: string) => void;
   onContinue: () => void;
   stepLoading: boolean;
-}) {
+  dobValue: DobValue;
+  dobError: string;
+  onDobChange: (value: DobValue) => void;
+};
+
+function renderField(field: StepDef["fields"][number], props: ActiveStepProps) {
+  if (field.type === "dob") {
+    return (
+      <FieldDateOfBirth
+        key={field.id}
+        id={field.id}
+        value={props.dobValue}
+        onChange={props.onDobChange}
+        error={props.dobError || undefined}
+      />
+    );
+  }
+  if (field.type === "select") {
+    return (
+      <Select
+        key={field.id}
+        id={field.id}
+        label={field.label}
+        value={props.values[field.id] ?? ""}
+        options={field.options ?? []}
+        onChange={(v: string) => props.onChange(field.id, v)}
+        error={props.errors[field.id] || undefined}
+      />
+    );
+  }
+  return (
+    <Input
+      key={field.id}
+      id={field.id}
+      label={field.label}
+      type={field.type}
+      value={props.values[field.id] ?? ""}
+      onChange={(v: string) => props.onChange(field.id, v)}
+      error={props.errors[field.id] || undefined}
+      autoComplete={field.autoComplete}
+      className={field.half ? styles.half : undefined}
+    />
+  );
+}
+
+function ActiveStep(props: ActiveStepProps) {
+  const { step, onContinue, stepLoading } = props;
   return (
     <div className={styles.fields}>
-      {step.fields.map((field) =>
-        field.type === "select" ? (
-          <Select
-            key={field.id}
-            id={field.id}
-            label={field.label}
-            value={values[field.id] ?? ""}
-            options={field.options ?? []}
-            onChange={(v) => onChange(field.id, v)}
-            error={errors[field.id] || undefined}
-          />
-        ) : (
-          <Input
-            key={field.id}
-            id={field.id}
-            label={field.label}
-            type={field.type}
-            value={values[field.id] ?? ""}
-            onChange={(v) => onChange(field.id, v)}
-            error={errors[field.id] || undefined}
-            autoComplete={field.autoComplete}
-            className={field.half ? styles.half : undefined}
-          />
-        )
-      )}
+      {step.fields.map((field) => renderField(field, props))}
       <button
         type="button"
         className={styles.continueButton}
@@ -84,8 +107,9 @@ function ActiveStep({ step, values, errors, onChange, onContinue, stepLoading }:
 
 export default function PersonalFormSimple() {
   const [values, setValues] = useState<Record<string, string>>({});
-  // errors holds the message to display — only set after a field has been blurred
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [dobValue, setDobValue] = useState<DobValue>({ day: "", month: "", year: "" });
+  const [dobError, setDobError] = useState("");
   const [completedIds, setCompletedIds] = useState<string[]>([]);
   const [stepLoading, setStepLoading] = useState(false);
   const [submitState, setSubmitState] = useState<SubmitState>({ status: "idle" });
@@ -95,7 +119,6 @@ export default function PersonalFormSimple() {
 
   function handleChange(id: string, value: string) {
     setValues((prev) => ({ ...prev, [id]: value }));
-    // Re-validate live only if this field already has a displayed error
     if (errors[id] !== undefined) {
       setErrors((prev) => ({ ...prev, [id]: validate(id, value) }));
     }
@@ -104,14 +127,34 @@ export default function PersonalFormSimple() {
   async function handleContinue(step: (typeof steps)[number]) {
     const stepErrors: Record<string, string> = {};
     let hasError = false;
+
     for (const field of step.fields) {
+      if (field.type === "dob") continue;
       const msg = validate(field.id, values[field.id] ?? "");
       stepErrors[field.id] = msg;
       if (msg) hasError = true;
     }
+
+    const hasDobField = step.fields.some((field) => field.type === "dob");
+    if (hasDobField) {
+      const dobResult = validateDateOfBirth(dobValue, { minYearOfBirth: 1900, maxYearOfBirth: 2010, contactType: "student" });
+      if (dobResult.isValid) {
+        setDobError("");
+      } else {
+        setDobError(dobResult.errors.day || dobResult.errors.month || dobResult.errors.year || "");
+        hasError = true;
+      }
+    }
+
     setErrors((prev) => ({ ...prev, ...stepErrors }));
     if (!hasError) {
-      const stepFields = Object.fromEntries(step.fields.map((f) => [f.id, values[f.id] ?? ""]));
+      const stepFields = Object.fromEntries(
+        step.fields.map((field) =>
+          field.type === "dob"
+            ? [field.id, `${dobValue.day}/${dobValue.month}/${dobValue.year}`]
+            : [field.id, values[field.id] ?? ""]
+        )
+      );
       console.log(`[${step.id}] continue — posting:`, { step: step.id, value: stepFields });
       setStepLoading(true);
       try {
@@ -135,7 +178,7 @@ export default function PersonalFormSimple() {
     e.preventDefault();
     setSubmitState({ status: "loading" });
     try {
-      const data = await submitFormData(values);
+      const data = await submitFormData({ ...values, dob: `${dobValue.day}/${dobValue.month}/${dobValue.year}` });
       console.log("[submit] response:", data);
       setSubmitState({ status: "success", data });
     } catch (err) {
@@ -150,6 +193,7 @@ export default function PersonalFormSimple() {
       {steps.map((step, index) => {
         const isCompleted = completedIds.includes(step.id);
         const isActive = index === activeStepIndex;
+        const summaryValues = { ...values, dob: `${dobValue.day}/${dobValue.month}/${dobValue.year}` };
 
         return (
           <fieldset
@@ -160,7 +204,7 @@ export default function PersonalFormSimple() {
             <legend className={styles.legend}>{step.label}</legend>
             {isCompleted && (
               <div className={styles.completedRow}>
-                <p className={styles.completedValue}>{step.summarise(values)}</p>
+                <p className={styles.completedValue}>{step.summarise(summaryValues)}</p>
                 <button type="button" className={styles.editButton} onClick={() => handleEdit(index)}>Edit</button>
               </div>
             )}
@@ -172,6 +216,9 @@ export default function PersonalFormSimple() {
                 onChange={handleChange}
                 onContinue={() => handleContinue(step)}
                 stepLoading={stepLoading}
+                dobValue={dobValue}
+                dobError={dobError}
+                onDobChange={setDobValue}
               />
             )}
           </fieldset>
