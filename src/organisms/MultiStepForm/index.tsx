@@ -3,7 +3,7 @@ import classNames from "classnames";
 import Radio from "@/atoms/Radio";
 import type { Step, Selections } from "./types";
 import { formContent, formatOption, allOptions, selectedLabel } from "./helpers";
-import { type SubmitState, submitFormData } from "@/lib/formHelpers";
+import { type SubmitState, postStepData, submitFormData } from "@/lib/formHelpers";
 import styles from "./MultiStepForm.module.css";
 
 function ActiveStep({ step, selected, onSelect }: {
@@ -51,17 +51,14 @@ function ActiveStep({ step, selected, onSelect }: {
 
 export default function MultiStepForm() {
   const [selections, setSelections] = useState<Selections>({});
+  const [activeStepIndex, setActiveStepIndex] = useState(0);
+  const [stepLoading, setStepLoading] = useState(false);
   const [submitState, setSubmitState] = useState<SubmitState>({ status: "idle" });
 
-  const activeStepIndex = formContent.steps.findIndex((step) => !selections[step.id]);
-  const isComplete = activeStepIndex === -1;
+  const isComplete = activeStepIndex >= formContent.steps.length;
 
   function handleSelect(stepId: string, value: string) {
-    setSelections((prev) => {
-      const next = { ...prev, [stepId]: value };
-      console.log(`[${stepId}] selected:`, value, '| form data:', next);
-      return next;
-    });
+    setSelections((prev) => ({ ...prev, [stepId]: value }));
   }
 
   function handleEdit(fromIndex: number) {
@@ -70,7 +67,23 @@ export default function MultiStepForm() {
       formContent.steps.slice(fromIndex).forEach(({ id }) => delete next[id]);
       return next;
     });
+    setActiveStepIndex(fromIndex);
     setSubmitState({ status: "idle" });
+  }
+
+  async function handleContinue(step: Step) {
+    const value = selections[step.id];
+    console.log(`[${step.id}] continue — posting:`, { step: step.id, value });
+    setStepLoading(true);
+    try {
+      const data = await postStepData(step.id, value);
+      console.log(`[${step.id}] post success:`, data);
+    } catch (err) {
+      console.error(`[${step.id}] post error:`, err instanceof Error ? err.message : err);
+    } finally {
+      setStepLoading(false);
+      setActiveStepIndex((i) => i + 1);
+    }
   }
 
   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
@@ -90,7 +103,7 @@ export default function MultiStepForm() {
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
       {formContent.steps.map((step, index) => {
-        const isCompleted = !!selections[step.id];
+        const isCompleted = index < activeStepIndex;
         const isActive = index === activeStepIndex;
 
         return (
@@ -107,11 +120,21 @@ export default function MultiStepForm() {
               </div>
             )}
             {isActive && (
-              <ActiveStep
-                step={step}
-                selected={selections[step.id]}
-                onSelect={(value) => handleSelect(step.id, value)}
-              />
+              <>
+                <ActiveStep
+                  step={step}
+                  selected={selections[step.id]}
+                  onSelect={(value) => handleSelect(step.id, value)}
+                />
+                <button
+                  type="button"
+                  className={styles.continueButton}
+                  disabled={!selections[step.id] || stepLoading}
+                  onClick={() => handleContinue(step)}
+                >
+                  {stepLoading ? "Saving…" : "Continue"}
+                </button>
+              </>
             )}
           </fieldset>
         );
