@@ -71,7 +71,7 @@ export default function PersonalForm() {
     setSubmitState({ status: "idle" });
   }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     setSubmitState({ status: "loading" });
     try {
