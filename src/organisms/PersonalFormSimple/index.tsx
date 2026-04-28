@@ -107,7 +107,11 @@ export default function PersonalFormSimple() {
       if (msg) hasError = true;
     }
     setErrors((prev) => ({ ...prev, ...stepErrors }));
-    if (!hasError) setCompletedIds((prev) => [...prev, step.id]);
+    if (!hasError) {
+      const stepFields = Object.fromEntries(step.fields.map((f) => [f.id, values[f.id] ?? ""]));
+      console.log(`[${step.id}] continue — posting:`, { step: step.id, value: stepFields });
+      setCompletedIds((prev) => [...prev, step.id]);
+    }
   }
 
   function handleEdit(fromIndex: number) {
@@ -124,6 +128,7 @@ export default function PersonalFormSimple() {
       setSubmitState({ status: "success", data });
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unknown error";
+      console.error("[submit] error:", message);
       setSubmitState({ status: "error", message });
     }
   }

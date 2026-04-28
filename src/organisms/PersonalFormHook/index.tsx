@@ -108,6 +108,11 @@ export default function PersonalFormHook() {
   const isComplete = activeStepIndex === -1;
 
   function handleContinue(stepId: string) {
+    const step = steps.find((s) => s.id === stepId)!;
+    const stepFields = Object.fromEntries(
+      step.fields.map((f) => [f.id, form.fields[f.id as keyof FormValues]])
+    );
+    console.log(`[${stepId}] continue — posting:`, { step: stepId, value: stepFields });
     setCompletedIds((prev) => [...prev, stepId]);
   }
 
@@ -125,6 +130,7 @@ export default function PersonalFormHook() {
       setSubmitState({ status: "success", data });
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unknown error";
+      console.error("[submit] error:", message);
       setSubmitState({ status: "error", message });
     }
   }
