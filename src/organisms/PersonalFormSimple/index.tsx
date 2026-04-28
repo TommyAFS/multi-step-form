@@ -4,7 +4,7 @@ import Input from "@/atoms/Input";
 import Select from "@/atoms/Select";
 import { steps } from "@/organisms/PersonalForm/steps";
 import type { StepDef } from "@/organisms/PersonalForm/steps";
-import { type SubmitState, submitFormData } from "@/lib/formHelpers";
+import { type SubmitState, postStepData, submitFormData } from "@/lib/formHelpers";
 import styles from "./PersonalFormSimple.module.css";
 
 // Validation rules as a plain object — no hook, no abstraction.
@@ -35,12 +35,13 @@ function validate(id: string, value: string): string {
   return "";
 }
 
-function ActiveStep({ step, values, errors, onChange, onContinue }: {
+function ActiveStep({ step, values, errors, onChange, onContinue, stepLoading }: {
   step: StepDef;
   values: Record<string, string>;
   errors: Record<string, string>;
   onChange: (id: string, value: string) => void;
   onContinue: () => void;
+  stepLoading: boolean;
 }) {
   return (
     <div className={styles.fields}>
@@ -73,8 +74,9 @@ function ActiveStep({ step, values, errors, onChange, onContinue }: {
         type="button"
         className={styles.continueButton}
         onClick={onContinue}
+        disabled={stepLoading}
       >
-        Continue
+        {stepLoading ? "Saving…" : "Continue"}
       </button>
     </div>
   );
@@ -85,6 +87,7 @@ export default function PersonalFormSimple() {
   // errors holds the message to display — only set after a field has been blurred
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [completedIds, setCompletedIds] = useState<string[]>([]);
+  const [stepLoading, setStepLoading] = useState(false);
   const [submitState, setSubmitState] = useState<SubmitState>({ status: "idle" });
 
   const activeStepIndex = steps.findIndex((s) => !completedIds.includes(s.id));
@@ -98,7 +101,7 @@ export default function PersonalFormSimple() {
     }
   }
 
-  function handleContinue(step: (typeof steps)[number]) {
+  async function handleContinue(step: (typeof steps)[number]) {
     const stepErrors: Record<string, string> = {};
     let hasError = false;
     for (const field of step.fields) {
@@ -110,7 +113,16 @@ export default function PersonalFormSimple() {
     if (!hasError) {
       const stepFields = Object.fromEntries(step.fields.map((f) => [f.id, values[f.id] ?? ""]));
       console.log(`[${step.id}] continue — posting:`, { step: step.id, value: stepFields });
-      setCompletedIds((prev) => [...prev, step.id]);
+      setStepLoading(true);
+      try {
+        const data = await postStepData(step.id, stepFields);
+        console.log(`[${step.id}] post success:`, data);
+      } catch (err) {
+        console.error(`[${step.id}] post error:`, err instanceof Error ? err.message : err);
+      } finally {
+        setStepLoading(false);
+        setCompletedIds((prev) => [...prev, step.id]);
+      }
     }
   }
 
@@ -159,6 +171,7 @@ export default function PersonalFormSimple() {
                 errors={errors}
                 onChange={handleChange}
                 onContinue={() => handleContinue(step)}
+                stepLoading={stepLoading}
               />
             )}
           </fieldset>

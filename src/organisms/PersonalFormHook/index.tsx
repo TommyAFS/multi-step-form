@@ -5,7 +5,7 @@ import Select from "@/atoms/Select";
 import { steps } from "@/organisms/PersonalForm/steps";
 import type { StepDef } from "@/organisms/PersonalForm/steps";
 import { useForm } from "@/hooks/useForm";
-import { type SubmitState, submitFormData } from "@/lib/formHelpers";
+import { type SubmitState, postStepData, submitFormData } from "@/lib/formHelpers";
 import styles from "./PersonalFormHook.module.css";
 
 // All field IDs across every step, typed so the hook can infer validation shape
@@ -25,12 +25,13 @@ type FormValues = {
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_NUMBER_PATTERN = /^[0-9]+$/
 
-function ActiveStep({ step, fields, errors, updateField, onContinue }: {
+function ActiveStep({ step, fields, errors, updateField, onContinue, stepLoading }: {
   step: StepDef;
   fields: FormValues;
   errors: Partial<Record<keyof FormValues, string>>;
   updateField: (field: keyof FormValues, value: string) => void;
   onContinue: () => void;
+  stepLoading: boolean;
 }) {
   // Continue requires every field in this step to be filled and error-free
   const canContinue = step.fields.every((f) => {
@@ -70,9 +71,9 @@ function ActiveStep({ step, fields, errors, updateField, onContinue }: {
         type="button"
         className={styles.continueButton}
         onClick={onContinue}
-        disabled={!canContinue}
+        disabled={!canContinue || stepLoading}
       >
-        Continue
+        {stepLoading ? "Saving…" : "Continue"}
       </button>
     </div>
   );
@@ -80,6 +81,7 @@ function ActiveStep({ step, fields, errors, updateField, onContinue }: {
 
 export default function PersonalFormHook() {
   const [completedIds, setCompletedIds] = useState<string[]>([]);
+  const [stepLoading, setStepLoading] = useState(false);
   const [submitState, setSubmitState] = useState<SubmitState>({ status: "idle" });
 
   // useForm manages field values, errors, and touched state.
@@ -107,13 +109,22 @@ export default function PersonalFormHook() {
   const activeStepIndex = steps.findIndex((s) => !completedIds.includes(s.id));
   const isComplete = activeStepIndex === -1;
 
-  function handleContinue(stepId: string) {
+  async function handleContinue(stepId: string) {
     const step = steps.find((s) => s.id === stepId)!;
     const stepFields = Object.fromEntries(
       step.fields.map((f) => [f.id, form.fields[f.id as keyof FormValues]])
     );
     console.log(`[${stepId}] continue — posting:`, { step: stepId, value: stepFields });
-    setCompletedIds((prev) => [...prev, stepId]);
+    setStepLoading(true);
+    try {
+      const data = await postStepData(stepId, stepFields);
+      console.log(`[${stepId}] post success:`, data);
+    } catch (err) {
+      console.error(`[${stepId}] post error:`, err instanceof Error ? err.message : err);
+    } finally {
+      setStepLoading(false);
+      setCompletedIds((prev) => [...prev, stepId]);
+    }
   }
 
   function handleEdit(fromIndex: number) {
@@ -161,6 +172,7 @@ export default function PersonalFormHook() {
                 errors={form.errors}
                 updateField={form.updateField}
                 onContinue={() => handleContinue(step.id)}
+                stepLoading={stepLoading}
               />
             )}
           </fieldset>

@@ -4,7 +4,7 @@ export type SubmitState =
   | { status: "success"; data: unknown }
   | { status: "error"; message: string };
 
-export async function postStepData(stepId: string, value: string): Promise<unknown> {
+export async function postStepData(stepId: string, value: unknown): Promise<unknown> {
   const res = await fetch("https://httpbin.org/post", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
