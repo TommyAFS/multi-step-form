@@ -1,5 +1,14 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+# Multi step from demo
+
+This includes three forms that show 
+- form with no validation (/)
+- form with plain object validation (/personal-simple)
+- form using a useForm hook for validation (/personal-hook)
+
+> These were all created to demo builing forms without external dependacies
+
 ## Getting Started
 
 First, run the development server:
