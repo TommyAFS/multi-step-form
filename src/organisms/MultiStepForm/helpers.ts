@@ -1,4 +1,4 @@
-import formContentRaw from "../../../formContent.json";
+import formContentRaw from "./formContent.json";
 import type { Step, RadioOption } from "./types";
 
 export const formContent = formContentRaw as { steps: Step[] };

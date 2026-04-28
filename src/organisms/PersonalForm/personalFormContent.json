@@ -1,0 +1,78 @@
+{
+  "steps": [
+    {
+      "id": "personal",
+      "label": "Personal Details",
+      "fields": [
+        { "id": "firstName", "label": "First name", "type": "text", "autoComplete": "given-name", "half": true },
+        { "id": "lastName", "label": "Last name", "type": "text", "autoComplete": "family-name", "half": true },
+        { "id": "email", "label": "Email", "type": "email", "autoComplete": "email" },
+        { "id": "phone", "label": "Phone number", "type": "tel", "autoComplete": "tel" }
+      ]
+    },
+    {
+      "id": "additional",
+      "label": "Additional Details",
+      "fields": [
+        { "id": "dob", "label": "Date of birth", "type": "date" },
+        {
+          "id": "gender",
+          "label": "Gender",
+          "type": "select",
+          "options": [
+            { "value": "male", "label": "Male" },
+            { "value": "female", "label": "Female" },
+            { "value": "non-binary", "label": "Non-binary" },
+            { "value": "prefer-not-to-say", "label": "Prefer not to say" }
+          ]
+        },
+        {
+          "id": "country",
+          "label": "Country",
+          "type": "select",
+          "options": [
+            { "value": "gb", "label": "United Kingdom" },
+            { "value": "us", "label": "United States" },
+            { "value": "au", "label": "Australia" },
+            { "value": "ca", "label": "Canada" },
+            { "value": "nz", "label": "New Zealand" },
+            { "value": "ie", "label": "Ireland" },
+            { "value": "de", "label": "Germany" },
+            { "value": "fr", "label": "France" },
+            { "value": "es", "label": "Spain" },
+            { "value": "it", "label": "Italy" },
+            { "value": "nl", "label": "Netherlands" },
+            { "value": "se", "label": "Sweden" },
+            { "value": "no", "label": "Norway" },
+            { "value": "dk", "label": "Denmark" },
+            { "value": "fi", "label": "Finland" },
+            { "value": "ch", "label": "Switzerland" },
+            { "value": "at", "label": "Austria" },
+            { "value": "be", "label": "Belgium" },
+            { "value": "pt", "label": "Portugal" },
+            { "value": "pl", "label": "Poland" },
+            { "value": "jp", "label": "Japan" },
+            { "value": "kr", "label": "South Korea" },
+            { "value": "cn", "label": "China" },
+            { "value": "in", "label": "India" },
+            { "value": "sg", "label": "Singapore" },
+            { "value": "za", "label": "South Africa" },
+            { "value": "br", "label": "Brazil" },
+            { "value": "mx", "label": "Mexico" },
+            { "value": "ar", "label": "Argentina" },
+            { "value": "other", "label": "Other" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "emergency",
+      "label": "Emergency Contact",
+      "fields": [
+        { "id": "ecName", "label": "Full name", "type": "text" },
+        { "id": "ecRelationship", "label": "Relationship", "type": "text", "half": true },
+        { "id": "ecPhone", "label": "Phone number", "type": "tel", "half": true }
+      ]
+    }
+  ]
+}

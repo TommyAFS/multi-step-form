@@ -3,6 +3,7 @@ import classNames from "classnames";
 import Radio from "@/atoms/Radio";
 import type { Step, Selections } from "./types";
 import { formContent, formatOption, allOptions, selectedLabel } from "./helpers";
+import { type SubmitState, submitFormData } from "@/lib/formHelpers";
 import styles from "./MultiStepForm.module.css";
 
 function ActiveStep({ step, selected, onSelect }: {
@@ -48,12 +49,6 @@ function ActiveStep({ step, selected, onSelect }: {
   );
 }
 
-type SubmitState =
-  | { status: "idle" }
-  | { status: "loading" }
-  | { status: "success"; data: unknown }
-  | { status: "error"; message: string };
-
 export default function MultiStepForm() {
   const [selections, setSelections] = useState<Selections>({});
   const [submitState, setSubmitState] = useState<SubmitState>({ status: "idle" });
@@ -82,12 +77,7 @@ export default function MultiStepForm() {
     e.preventDefault();
     setSubmitState({ status: "loading" });
     try {
-      const res = await fetch("https://httpbin.org/post", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(selections),
-      });
-      const data = await res.json();
+      const data = await submitFormData(selections);
       console.log("[submit] response:", data);
       setSubmitState({ status: "success", data });
     } catch (err) {
