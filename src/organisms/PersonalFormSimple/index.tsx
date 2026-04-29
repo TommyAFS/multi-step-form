@@ -194,6 +194,13 @@ export default function PersonalFormSimple() {
         })
       );
 
+      if (step.id === "guarantor" && values.guarantorSameAsEC === "yes") {
+        stepFields.guarantorFirstName = values.ecFirstName ?? "";
+        stepFields.guarantorLastName = values.ecLastName ?? "";
+        stepFields.guarantorEmail = values.ecEmail ?? "";
+        stepFields.guarantorPhone = values.ecPhone ?? "";
+      }
+
       console.log(`[${step.id}] continue — posting:`, { step: step.id, value: stepFields });
       setStepLoading(true);
 
