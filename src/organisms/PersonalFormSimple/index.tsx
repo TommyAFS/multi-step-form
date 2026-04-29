@@ -6,7 +6,7 @@ import Radio from "@/atoms/Radio/Radio";
 import FieldDateOfBirth from "@/atoms/Date/date";
 import { validateDateOfBirth } from "@/atoms/Date/date.validation";
 import { steps } from "./simpleSteps";
-import type { StepDefinition, FieldDefinition } from "./simpleSteps";
+import type { StepDefinition } from "./simpleSteps";
 import { type SubmitState, postStepData, submitFormData } from "@/lib/formHelpers";
 import styles from "./PersonalFormSimple.module.css";
 import { GuarantoDetails } from "./guarantorDetails";
@@ -191,7 +191,20 @@ export default function PersonalFormSimple() {
   const isComplete = activeStepIndex === -1;
 
   function handleChange(fieldId: string, value: string) {
-    setValues((previous) => ({ ...previous, [fieldId]: value }));
+    setValues((previous) => {
+      const next = { ...previous, [fieldId]: value };
+
+      if (fieldId === "hasGuarantor" && value !== "yes") {
+        delete next.guarantorSameAsEC;
+        for (const field of guarantorPersonalDetailFields) delete next[field.id];
+      }
+
+      if (fieldId === "guarantorSameAsEC") {
+        for (const field of guarantorPersonalDetailFields) delete next[field.id];
+      }
+
+      return next;
+    });
     if (errors[fieldId] !== undefined) {
       setErrors((previous) => ({ ...previous, [fieldId]: validate(fieldId, value) }));
     }
