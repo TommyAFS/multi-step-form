@@ -62,6 +62,10 @@ type ActiveStepProps = {
 };
 
 function renderField(field: StepDefinition["fields"][number], props: ActiveStepProps) {
+  if (field.id === "guarantorSameAsEC" && props.values.hasGuarantor !== "yes") {
+    return null;
+  }
+
   if (field.type === "dob") {
     return (
       <FieldDateOfBirth
