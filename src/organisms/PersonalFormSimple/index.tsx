@@ -6,12 +6,18 @@ import Radio from "@/atoms/Radio/Radio";
 import FieldDateOfBirth from "@/atoms/Date/date";
 import { validateDateOfBirth } from "@/atoms/Date/date.validation";
 import { steps } from "./simpleSteps";
-import type { StepDefinition } from "./simpleSteps";
+import type { StepDefinition, FieldDefinition } from "./simpleSteps";
 import { type SubmitState, postStepData, submitFormData } from "@/lib/formHelpers";
 import styles from "./PersonalFormSimple.module.css";
 import { GuarantoDetails } from "./guarantorDetails";
 
 type DateOfBirthValue = { day: string; month: string; year: string };
+
+const emergencyContactStep = steps.find((step) => step.id === "emergency")!;
+const guarantorPersonalDetailFields = emergencyContactStep.fields.map((field) => ({
+  ...field,
+  id: field.id.startsWith("ec") ? `guarantor${field.id.slice(2)}` : field.id,
+}));
 
 type FieldRule = {
   required?: string;
@@ -34,8 +40,14 @@ const validationRules: Record<string, FieldRule> = {
   ecEmail:            { required: "Email address is required", pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Enter a valid email address" } },
   ecPhone:            { required: "Phone number is required", pattern: { value: /^\d+$/, message: "Enter a valid phone number" } },
   ecCountry:          { required: "Please select a country" },
-  hasGuarantor:       { required: "Please select an option" },
-  guarantorSameAsEC:  { required: "Please select an option" },
+  hasGuarantor:           { required: "Please select an option" },
+  guarantorSameAsEC:      { required: "Please select an option" },
+  guarantorRelationship:  { required: "Please select a relationship" },
+  guarantorFirstName:     { required: "First name is required" },
+  guarantorLastName:      { required: "Last name is required" },
+  guarantorEmail:         { required: "Email address is required", pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Enter a valid email address" } },
+  guarantorPhone:         { required: "Phone number is required", pattern: { value: /^\d+$/, message: "Enter a valid phone number" } },
+  guarantorCountry:       { required: "Please select a country" },
   cardNumber:         { required: "Card number is required" },
   cardExpiry:         { required: "Expiry date is required" },
   cardCvv:            { required: "Security code is required" },
@@ -136,17 +148,25 @@ function ActiveStep(props: ActiveStepProps) {
     props.values.hasGuarantor === "yes" &&
     props.values.guarantorSameAsEC === "yes";
 
+  const showGuarantorPersonalDetailsForm =
+    step.id === "guarantor" &&
+    props.values.hasGuarantor === "yes" &&
+    props.values.guarantorSameAsEC === "no";
+
   return (
     <div className={styles.fields}>
       {step.fields.map((field) => renderField(field, props))}
       {showGuarantorECSummary && (
-        <GuarantoDetails 
-          ecFirstName={props.values.ecFirstName} 
-          ecLastName={props.values.ecLastName} 
+        <GuarantoDetails
+          ecFirstName={props.values.ecFirstName}
+          ecLastName={props.values.ecLastName}
           ecEmail={props.values.ecEmail}
           ecPhone={props.values.ecPhone}
         />
       )}
+      {showGuarantorPersonalDetailsForm &&
+        guarantorPersonalDetailFields.map((field) => renderField(field, props))
+      }
       <button
         type="button"
         className={styles.continueButton}
@@ -194,9 +214,26 @@ export default function PersonalFormSimple() {
         continue;
       }
 
+      if (field.id === "guarantorSameAsEC" && values.hasGuarantor !== "yes") continue;
+
       const errorMessage = validate(field.id, values[field.id] ?? "");
       stepErrors[field.id] = errorMessage;
       if (errorMessage) hasError = true;
+    }
+
+    if (step.id === "guarantor" && values.guarantorSameAsEC === "no") {
+      for (const field of guarantorPersonalDetailFields) {
+        if (field.type === "dob") {
+          const dobValue = dobValues[field.id] ?? { day: "", month: "", year: "" };
+          const result = validateDateOfBirth(dobValue, { minYearOfBirth: 1900, maxYearOfBirth: 2010, contactType: "student" });
+          stepErrors[field.id] = result.isValid ? "" : (result.errors.day || result.errors.month || result.errors.year || "");
+          if (!result.isValid) hasError = true;
+        } else {
+          const errorMessage = validate(field.id, values[field.id] ?? "");
+          stepErrors[field.id] = errorMessage;
+          if (errorMessage) hasError = true;
+        }
+      }
     }
 
     setErrors((previous) => ({ ...previous, ...stepErrors }));
@@ -217,6 +254,17 @@ export default function PersonalFormSimple() {
         stepFields.guarantorLastName = values.ecLastName ?? "";
         stepFields.guarantorEmail = values.ecEmail ?? "";
         stepFields.guarantorPhone = values.ecPhone ?? "";
+      }
+
+      if (step.id === "guarantor" && values.guarantorSameAsEC === "no") {
+        for (const field of guarantorPersonalDetailFields) {
+          if (field.type === "dob") {
+            const dobValue = dobValues[field.id] ?? { day: "", month: "", year: "" };
+            stepFields[field.id] = `${dobValue.day}/${dobValue.month}/${dobValue.year}`;
+          } else {
+            stepFields[field.id] = values[field.id] ?? "";
+          }
+        }
       }
 
       console.log(`[${step.id}] continue — posting:`, { step: step.id, value: stepFields });
