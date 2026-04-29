@@ -44,7 +44,6 @@ type ActiveStepProps = {
   onContinue: () => void;
   stepLoading: boolean;
   dobValue: DobValue;
-  dobError: string;
   onDobChange: (value: DobValue) => void;
 };
 
@@ -56,7 +55,7 @@ function renderField(field: StepDef["fields"][number], props: ActiveStepProps) {
         id={field.id}
         value={props.dobValue}
         onChange={props.onDobChange}
-        error={props.dobError || undefined}
+        error={props.errors[field.id] || undefined}
       />
     );
   }
@@ -109,7 +108,6 @@ export default function PersonalFormSimple() {
   const [values, setValues] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [dobValue, setDobValue] = useState<DobValue>({ day: "", month: "", year: "" });
-  const [dobError, setDobError] = useState("");
   const [completedIds, setCompletedIds] = useState<string[]>([]);
   const [stepLoading, setStepLoading] = useState(false);
   const [submitState, setSubmitState] = useState<SubmitState>({ status: "idle" });
@@ -129,21 +127,15 @@ export default function PersonalFormSimple() {
     let hasError = false;
 
     for (const field of step.fields) {
-      if (field.type === "dob") continue;
+      if (field.type === "dob") {
+        const dobResult = validateDateOfBirth(dobValue, { minYearOfBirth: 1900, maxYearOfBirth: 2010, contactType: "student" });
+        stepErrors[field.id] = dobResult.isValid ? "" : (dobResult.errors.day || dobResult.errors.month || dobResult.errors.year || "");
+        if (!dobResult.isValid) hasError = true;
+        continue;
+      }
       const msg = validate(field.id, values[field.id] ?? "");
       stepErrors[field.id] = msg;
       if (msg) hasError = true;
-    }
-
-    const hasDobField = step.fields.some((field) => field.type === "dob");
-    if (hasDobField) {
-      const dobResult = validateDateOfBirth(dobValue, { minYearOfBirth: 1900, maxYearOfBirth: 2010, contactType: "student" });
-      if (dobResult.isValid) {
-        setDobError("");
-      } else {
-        setDobError(dobResult.errors.day || dobResult.errors.month || dobResult.errors.year || "");
-        hasError = true;
-      }
     }
 
     setErrors((prev) => ({ ...prev, ...stepErrors }));
@@ -217,7 +209,6 @@ export default function PersonalFormSimple() {
                 onContinue={() => handleContinue(step)}
                 stepLoading={stepLoading}
                 dobValue={dobValue}
-                dobError={dobError}
                 onDobChange={setDobValue}
               />
             )}
