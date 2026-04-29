@@ -1,0 +1,2 @@
+export const MIN_YEAR_OF_BIRTH = 1910;
+export const MAX_YEAR_OF_BIRTH_FOR_STUDENT = 2010;
