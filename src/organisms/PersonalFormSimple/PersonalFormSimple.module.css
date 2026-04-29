@@ -149,3 +149,24 @@
   flex-direction: column;
   gap: 0.5rem;
 }
+
+.guarantorSummary {
+  background: #f9fafb;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.875rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.guarantorSummaryName {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.guarantorSummaryDetail {
+  font-size: 0.875rem;
+  color: #6b7280;
+}

@@ -9,6 +9,7 @@ import { steps } from "./simpleSteps";
 import type { StepDefinition } from "./simpleSteps";
 import { type SubmitState, postStepData, submitFormData } from "@/lib/formHelpers";
 import styles from "./PersonalFormSimple.module.css";
+import { GuarantoDetails } from "./guarantorDetails";
 
 type DateOfBirthValue = { day: string; month: string; year: string };
 
@@ -130,9 +131,22 @@ function renderField(field: StepDefinition["fields"][number], props: ActiveStepP
 
 function ActiveStep(props: ActiveStepProps) {
   const { step, onContinue, stepLoading } = props;
+  const showGuarantorECSummary =
+    step.id === "guarantor" &&
+    props.values.hasGuarantor === "yes" &&
+    props.values.guarantorSameAsEC === "yes";
+
   return (
     <div className={styles.fields}>
       {step.fields.map((field) => renderField(field, props))}
+      {showGuarantorECSummary && (
+        <GuarantoDetails 
+          ecFirstName={props.values.ecFirstName} 
+          ecLastName={props.values.ecLastName} 
+          ecEmail={props.values.ecEmail}
+          ecPhone={props.values.ecPhone}
+        />
+      )}
       <button
         type="button"
         className={styles.continueButton}
