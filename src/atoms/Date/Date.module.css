@@ -1,3 +1,10 @@
+.fieldLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.375rem;
+}
+
 .inputs {
   display: flex;
   gap: 0.75rem;

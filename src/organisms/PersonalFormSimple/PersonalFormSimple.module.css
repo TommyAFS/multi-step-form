@@ -136,3 +136,16 @@
   font-size: 0.875rem;
   color: #dc2626;
 }
+
+.radioGroupLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.375rem;
+}
+
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

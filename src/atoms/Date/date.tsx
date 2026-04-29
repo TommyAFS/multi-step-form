@@ -9,6 +9,7 @@ type DateOfBirthValue = {
 
 type FieldDateOfBirthProps = {
   id: string;
+  label?: string;
   value: DateOfBirthValue;
   onChange: (value: DateOfBirthValue) => void;
   onBlur?: () => void;
@@ -16,9 +17,10 @@ type FieldDateOfBirthProps = {
   className?: string;
 };
 
-export default function FieldDateOfBirth({ id, value, onChange, onBlur, error, className }: FieldDateOfBirthProps) {
+export default function FieldDateOfBirth({ id, label, value, onChange, onBlur, error, className }: FieldDateOfBirthProps) {
   return (
     <div className={className}>
+      {label && <p className={styles.fieldLabel}>{label}</p>}
       <div className={styles.inputs}>
         <Input
           id={`${id}-day`}

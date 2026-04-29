@@ -1,0 +1,216 @@
+{
+  "steps": [
+    {
+      "id": "personal",
+      "label": "Personal Details",
+      "fields": [
+        { "id": "firstName", "label": "First name", "type": "text", "autoComplete": "given-name", "half": true },
+        { "id": "lastName", "label": "Last name", "type": "text", "autoComplete": "family-name", "half": true },
+        { "id": "email", "label": "Email", "type": "email", "autoComplete": "email" },
+        { "id": "phone", "label": "Phone number", "type": "tel", "autoComplete": "tel" }
+      ]
+    },
+    {
+      "id": "additional",
+      "label": "Additional Details",
+      "fields": [
+        { "id": "dob", "label": "Date of birth", "type": "dob" },
+        {
+          "id": "gender",
+          "label": "Gender",
+          "type": "select",
+          "options": [
+            { "value": "male", "label": "Male" },
+            { "value": "female", "label": "Female" },
+            { "value": "non-binary", "label": "Non-binary" },
+            { "value": "prefer-not-to-say", "label": "Prefer not to say" }
+          ]
+        },
+        {
+          "id": "country",
+          "label": "Country of nationality",
+          "type": "select",
+          "options": [
+            { "value": "gb", "label": "United Kingdom" },
+            { "value": "us", "label": "United States" },
+            { "value": "au", "label": "Australia" },
+            { "value": "ca", "label": "Canada" },
+            { "value": "nz", "label": "New Zealand" },
+            { "value": "ie", "label": "Ireland" },
+            { "value": "de", "label": "Germany" },
+            { "value": "fr", "label": "France" },
+            { "value": "es", "label": "Spain" },
+            { "value": "it", "label": "Italy" },
+            { "value": "nl", "label": "Netherlands" },
+            { "value": "se", "label": "Sweden" },
+            { "value": "no", "label": "Norway" },
+            { "value": "dk", "label": "Denmark" },
+            { "value": "fi", "label": "Finland" },
+            { "value": "ch", "label": "Switzerland" },
+            { "value": "at", "label": "Austria" },
+            { "value": "be", "label": "Belgium" },
+            { "value": "pt", "label": "Portugal" },
+            { "value": "pl", "label": "Poland" },
+            { "value": "jp", "label": "Japan" },
+            { "value": "kr", "label": "South Korea" },
+            { "value": "cn", "label": "China" },
+            { "value": "in", "label": "India" },
+            { "value": "sg", "label": "Singapore" },
+            { "value": "za", "label": "South Africa" },
+            { "value": "br", "label": "Brazil" },
+            { "value": "mx", "label": "Mexico" },
+            { "value": "ar", "label": "Argentina" },
+            { "value": "other", "label": "Other" }
+          ]
+        },
+        {
+          "id": "yearOfStudy",
+          "label": "Year of study",
+          "type": "select",
+          "options": [
+            { "value": "undergrad-1", "label": "Undergraduate - First year" },
+            { "value": "undergrad-2", "label": "Undergraduate - Second year" },
+            { "value": "undergrad-3", "label": "Undergraduate - Third year" },
+            { "value": "undergrad-4", "label": "Undergraduate - Fourth year" },
+            { "value": "postgrad-masters", "label": "Postgraduate - Masters" },
+            { "value": "postgrad-phd", "label": "Postgraduate - PhD" },
+            { "value": "other", "label": "Other" }
+          ]
+        },
+        { "id": "university", "label": "University", "type": "text" },
+        { "id": "courseName", "label": "Course title", "type": "text" }
+      ]
+    },
+    {
+      "id": "emergency",
+      "label": "Emergency Contact",
+      "fields": [
+        {
+          "id": "ecRelationship",
+          "label": "Relationship to you",
+          "type": "select",
+          "options": [
+            { "value": "parent", "label": "Parent" },
+            { "value": "sibling", "label": "Sibling" },
+            { "value": "spouse", "label": "Spouse / Partner" },
+            { "value": "friend", "label": "Friend" },
+            { "value": "other", "label": "Other" }
+          ]
+        },
+        { "id": "ecFirstName", "label": "First name", "type": "text", "half": true },
+        { "id": "ecLastName", "label": "Last name", "type": "text", "half": true },
+        { "id": "ecEmail", "label": "Email address", "type": "email" },
+        { "id": "ecPhone", "label": "Phone number", "type": "tel" },
+        {
+          "id": "ecCountry",
+          "label": "Country of nationality",
+          "type": "select",
+          "options": [
+            { "value": "gb", "label": "United Kingdom" },
+            { "value": "us", "label": "United States" },
+            { "value": "au", "label": "Australia" },
+            { "value": "ca", "label": "Canada" },
+            { "value": "nz", "label": "New Zealand" },
+            { "value": "ie", "label": "Ireland" },
+            { "value": "de", "label": "Germany" },
+            { "value": "fr", "label": "France" },
+            { "value": "es", "label": "Spain" },
+            { "value": "it", "label": "Italy" },
+            { "value": "nl", "label": "Netherlands" },
+            { "value": "se", "label": "Sweden" },
+            { "value": "no", "label": "Norway" },
+            { "value": "dk", "label": "Denmark" },
+            { "value": "fi", "label": "Finland" },
+            { "value": "ch", "label": "Switzerland" },
+            { "value": "at", "label": "Austria" },
+            { "value": "be", "label": "Belgium" },
+            { "value": "pt", "label": "Portugal" },
+            { "value": "pl", "label": "Poland" },
+            { "value": "jp", "label": "Japan" },
+            { "value": "kr", "label": "South Korea" },
+            { "value": "cn", "label": "China" },
+            { "value": "in", "label": "India" },
+            { "value": "sg", "label": "Singapore" },
+            { "value": "za", "label": "South Africa" },
+            { "value": "br", "label": "Brazil" },
+            { "value": "mx", "label": "Mexico" },
+            { "value": "ar", "label": "Argentina" },
+            { "value": "other", "label": "Other" }
+          ]
+        },
+        { "id": "ecDob", "label": "Date of birth", "type": "dob" }
+      ]
+    },
+    {
+      "id": "guarantor",
+      "label": "Guarantor",
+      "fields": [
+        {
+          "id": "hasGuarantor",
+          "label": "Is your guarantor a UK-based guarantor?",
+          "type": "radio",
+          "options": [
+            { "value": "yes", "label": "Yes, I have one" },
+            { "value": "no", "label": "No, I need a guarantor" }
+          ]
+        },
+        {
+          "id": "guarantorSameAsEC",
+          "label": "Is your guarantor the same as your emergency contact?",
+          "type": "radio",
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "no", "label": "No" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "payment",
+      "label": "Pay deposit",
+      "fields": [
+        { "id": "cardNumber", "label": "Card number", "type": "text", "autoComplete": "cc-number" },
+        { "id": "cardExpiry", "label": "Expiry date", "type": "text", "autoComplete": "cc-exp", "half": true },
+        { "id": "cardCvv", "label": "Security code", "type": "text", "autoComplete": "cc-csc", "half": true },
+        {
+          "id": "billingCountry",
+          "label": "Country",
+          "type": "select",
+          "options": [
+            { "value": "gb", "label": "United Kingdom" },
+            { "value": "us", "label": "United States" },
+            { "value": "au", "label": "Australia" },
+            { "value": "ca", "label": "Canada" },
+            { "value": "nz", "label": "New Zealand" },
+            { "value": "ie", "label": "Ireland" },
+            { "value": "de", "label": "Germany" },
+            { "value": "fr", "label": "France" },
+            { "value": "es", "label": "Spain" },
+            { "value": "it", "label": "Italy" },
+            { "value": "nl", "label": "Netherlands" },
+            { "value": "se", "label": "Sweden" },
+            { "value": "no", "label": "Norway" },
+            { "value": "dk", "label": "Denmark" },
+            { "value": "fi", "label": "Finland" },
+            { "value": "ch", "label": "Switzerland" },
+            { "value": "at", "label": "Austria" },
+            { "value": "be", "label": "Belgium" },
+            { "value": "pt", "label": "Portugal" },
+            { "value": "pl", "label": "Poland" },
+            { "value": "jp", "label": "Japan" },
+            { "value": "kr", "label": "South Korea" },
+            { "value": "cn", "label": "China" },
+            { "value": "in", "label": "India" },
+            { "value": "sg", "label": "Singapore" },
+            { "value": "za", "label": "South Africa" },
+            { "value": "br", "label": "Brazil" },
+            { "value": "mx", "label": "Mexico" },
+            { "value": "ar", "label": "Argentina" },
+            { "value": "other", "label": "Other" }
+          ]
+        },
+        { "id": "billingPostcode", "label": "Postcode / ZIP code", "type": "text", "autoComplete": "postal-code" }
+      ]
+    }
+  ]
+}
